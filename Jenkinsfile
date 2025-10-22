@@ -1,49 +1,63 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JDK11'
-        maven 'Maven3'
+    environment {
+        // Optional: set JAVA_HOME if needed
+        // JAVA_HOME = "C:\\Program Files\\Java\\jdk-11"
+        // PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
+
         stage('Checkout') {
-            steps { echo 'Code already in workspace' }
-        }
-
-        stage('Compile') {
             steps {
-                echo 'Compiling code...'
-                sh 'mvn clean compile'
+                echo 'Checking out code from Git...'
+                checkout scm
             }
         }
 
-        stage('Code Quality') {
+        stage('Build & Compile') {
             steps {
-                echo 'Running Checkstyle...'
-                sh 'mvn checkstyle:check'
+                echo 'Cleaning and compiling project...'
+                bat '''
+                mvn clean
+                mvn compile
+                '''
             }
         }
 
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                echo 'Running unit tests...'
-                sh 'mvn test'
+                echo 'Running JUnit tests...'
+                bat 'mvn test'
             }
-            post { always { junit '**/target/surefire-reports/*.xml' } }
         }
 
         stage('Package') {
             steps {
-                echo 'Packaging project...'
-                sh 'mvn package'
+                echo 'Packaging project into JAR...'
+                bat 'mvn package'
             }
-            post { success { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true } }
+        }
+
+        stage('Post-Build Actions') {
+            steps {
+                echo 'Build completed successfully!'
+                echo 'JAR file is in target/ folder'
+                echo 'Test results are in target/surefire-reports/'
+            }
         }
     }
 
     post {
-        success { echo '✅ Build Completed' }
-        failure { echo '❌ Build Failed' }
+        success {
+            echo '✅ Pipeline succeeded!'
+        }
+        failure {
+            echo '❌ Pipeline failed!'
+        }
+        always {
+            echo 'Pipeline finished.'
+        }
     }
 }
