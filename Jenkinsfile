@@ -1,11 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        // Optional: set JAVA_HOME if needed
-        // JAVA_HOME = "C:\\Program Files\\Java\\jdk-11"
-        // PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
-    }
+    // Optional: uncomment and set JAVA_HOME if your Jenkins needs it
+    // environment {
+    //     JAVA_HOME = "C:\\Program Files\\Java\\jdk-17"
+    //     PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
+    // }
 
     stages {
 
@@ -19,10 +19,7 @@ pipeline {
         stage('Build & Compile') {
             steps {
                 echo 'Cleaning and compiling project...'
-                bat '''
-                mvn clean
-                mvn compile
-                '''
+                bat 'mvn clean compile'
             }
         }
 
