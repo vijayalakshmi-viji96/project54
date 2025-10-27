@@ -1,15 +1,19 @@
 package com.example;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AppTest {
 
     @Test
-    public void testFailExample() {
-        int expected = 5;
-        int actual = 3;
-        assertEquals("Intentional failure for testing Jenkins", expected, actual);
+    void testPass() {
+        assertEquals(4, 2 + 2); // ✅ This test will pass
+    }
+
+    @Test
+    void testFail() {
+        assertEquals(10, 5 + 2); // ❌ This test will fail (to show Failure = 1)
     }
 }
+
 
